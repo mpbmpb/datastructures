@@ -52,48 +52,83 @@ namespace Datastructures
             }
         }
 
-        public bool Search(T value) => Count != 0 && _root.Value.Equals(value) || findParentOf(value) is not null;
+        public bool Search(T value)
+        {
+            var current = _root;
 
+            while (current is not null)
+            {
+                if (current.Value.Equals(value))
+                    return true;
+                current = value.CompareTo(current.Value) > 0 ? current.Right : current.Left;
+            }
+            return false;
+        }
         public bool Delete(T value)
         {
-            if (_root.Value.Equals(value))
-            {
-                
-            }
-            var parentOfTarget = _root.Value.Equals(value) ? _root : findParentOf(value);
-            if (parentOfTarget is null)
-                return false;
-            var nodeToRemove = parentOfTarget.Left.Value.Equals(value)  ? parentOfTarget.Left : parentOfTarget.Right;
-            if (nodeToRemove.Left is null)
-            {
-                if (nodeToRemove.Right is null)
-                {
-                    RemoveNode(value, parentOfTarget);
-                    Count--;
-                    return true;
-                }
+            var parent = _root;
+            var current = _root;
 
-                var nextNode = nodeToRemove.Right;
-                if (parentOfTarget.Left.Value.Equals(value))
-                    parentOfTarget.Left = nextNode;
-                else parentOfTarget.Right = nextNode;
-            }
-            else if (nodeToRemove.Right is null)
+            while (current is not null && !current.Value.Equals(value))
             {
-                var nextNode = nodeToRemove.Left;
-                if (parentOfTarget.Left.Value.Equals(value))
-                    parentOfTarget.Left = nextNode;
-                else parentOfTarget.Right = nextNode;
+                parent = current;
+                current = current.Value.CompareTo(value) < 0 ? current.Right : current.Left;
+            }
+            if (current is null) return false;
+
+            if (current.Left is null && current.Right is null)
+            {
+                    RemoveCurrentNode();
+                    return true;
+            }
+            if (current.Left is null)
+            {
+                if (parent.Right?.Value.Equals(value) ?? false)
+                    pullUpNodeToRight(current.Right);
+                else pullUpNodeToLeft(current.Right);
+            }
+            else if (current.Right is null)
+            {
+                if (parent.Right?.Value.Equals(value) ?? false)
+                    pullUpNodeToRight(current.Left);
+                else pullUpNodeToLeft(current.Left);
             }
             else
             {
-                var smallestChild = Min(nodeToRemove.Right);
-                nodeToRemove.Right.Value = smallestChild;
-                Delete(smallestChild);
+                var nextOrderedSuccessor = Min(current.Right);
+                var nodeToUpdate = current;
+                Delete(nextOrderedSuccessor);
+                nodeToUpdate.Value = nextOrderedSuccessor;
                 return true;
             }
             Count--;
             return true;
+            
+            
+            void RemoveCurrentNode()
+            {
+                if (_root.Value.Equals(value))
+                    _root = null;
+                if (parent.Left?.Value.Equals(value) ?? false)
+                    parent.Left = null;
+                else
+                    parent.Right = null;
+                Count--;
+            }
+            
+            void pullUpNodeToRight(Node<T> node)
+            {
+                if (_root.Value.Equals(value))
+                    _root = node;
+                else parent.Right = node;
+            }
+
+            void pullUpNodeToLeft(Node<T> node)
+            {
+                if (_root.Value.Equals(value))
+                    _root = node;
+                else parent.Left = node;
+            }
         }
 
         private T Min(Node<T> node)
@@ -104,6 +139,8 @@ namespace Datastructures
             return node.Value;
         }
 
+        public T Min() => Min(_root);
+
         private T Max(Node<T> node)
         {
             while (node.Right is not null)
@@ -112,31 +149,7 @@ namespace Datastructures
             return node.Value;
         }
 
-        private static void RemoveNode(T value, Node<T> fromParent)
-        {
-            if (fromParent.Left.Value.Equals(value))
-                fromParent.Left = null;
-            else
-                fromParent.Right = null;
-        }
-
-
-        private Node<T> findParentOf(T value)
-        {
-            var current = _root;
-
-            while (current is not null)
-            {
-                if (current.IsParentOf(value))
-                    return current;
-                if (value.CompareTo(current.Value) > 0)
-                    current = current.Right;
-                else
-                    current = current.Left;
-            }
-
-            return current;
-        }
+        public T Max() => Max(_root);
 
     }
 }
