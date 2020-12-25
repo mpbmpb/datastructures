@@ -197,5 +197,18 @@ namespace Datastructures.Tests
 
             result.Should().Equal(expected);
         }
+
+        [Fact]
+        public void Null_tests()
+        {
+            var tree = new BST<int>();
+
+            tree.Max().Should().BeNull();
+            tree.Min().Should().BeNull();
+            tree.Search(1).Should().BeNull();
+            tree.InOrder().Should().BeEmpty();
+            tree.Count.Should().Be(0);
+            tree.Delete(1).Should().BeFalse();
+        }
     }
 }

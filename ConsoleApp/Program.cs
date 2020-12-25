@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Datastructures;
 
 namespace ConsoleApp
@@ -7,10 +8,20 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            BST<int> Tree = new(10);
-            Tree.Insert(5);
-            Tree.Insert(6);
-            Console.WriteLine(Tree.Insert(5));
+            var tree = new BST<int>();
+            // tree.Insert(15);
+            // tree.Insert(7);
+            // tree.Insert(2);
+            // tree.Insert(13);
+            // tree.Insert(14);
+            // tree.Insert(9);
+            // tree.Insert(17);
+            // tree.Insert(1);
+            
+            tree.InOrder().ToList().ForEach(Console.WriteLine);
+
+            var tree2 = new BST<int>();
+            Console.WriteLine(tree2.Min() is null);
         }
     }
 }

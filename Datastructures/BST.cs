@@ -19,38 +19,30 @@ namespace Datastructures
 
         public bool Insert(T value)
         {
-            if (Count == 0)
+            try
             {
-                _root = new(value);
-                Count = 1;
-                return true;
+                _root = Insert(_root, value);
+            }
+            catch (Exception)
+            {
+                return false;
             }
 
-            var current = _root;
-            while (true)
-            {
-                if (value.CompareTo(current.Value) == 0)
-                    return false;
-                if (value.CompareTo(current.Value) > 0)
-                {
-                    if (current.Right is not null)
-                        current = current.Right;
-                    else
-                    {
-                        current.Right = new(value);
-                        Count++;
-                        return true;
-                    }
-                }                
-                else if (current.Left is not null)
-                    current = current.Left;
-                else
-                {
-                    current.Left = new(value);
-                    Count++;
-                    return true;
-                }
-            }
+            Count++;
+            return true;
+        }
+
+        private Node<T> Insert(Node<T> node, T value)
+        {
+            if (node is null)
+                return new Node<T>(value);
+            if (node.Value.Equals(value))
+                throw new ArgumentException("Key already exists.");
+            if (value.CompareTo(node.Value) > 0)
+                node.Right = Insert(node.Right, value);
+            else node.Left = Insert(node.Left, value);
+            
+            return node;
         }
 
         public Node<T> Search(T value)
@@ -65,120 +57,84 @@ namespace Datastructures
             }
             return null;
         }
+                
         public bool Delete(T value)
         {
-            var parent = _root;
-            var current = _root;
+            try
+            {
+                _root = Delete(_root, value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            while (current is not null && !current.Value.Equals(value))
-            {
-                parent = current;
-                current = value.CompareTo(current.Value) > 0 ? current.Right : current.Left;
-            }
-            if (current is null) return false;
-
-            if (current.Left is null && current.Right is null)
-            {
-                    RemoveCurrentNode();
-                    return true;
-            }
-            if (current.Left is null)
-            {
-                if (parent.Right?.Value.Equals(value) ?? false)
-                    pullUpNodeToRight(current.Right);
-                else pullUpNodeToLeft(current.Right);
-            }
-            else if (current.Right is null)
-            {
-                if (parent.Right?.Value.Equals(value) ?? false)
-                    pullUpNodeToRight(current.Left);
-                else pullUpNodeToLeft(current.Left);
-            }
-            else
-            {
-                var nextOrderedSuccessor = Min(current.Right).Value;
-                var nodeToUpdate = current;
-                Delete(nextOrderedSuccessor);
-                nodeToUpdate.Value = nextOrderedSuccessor;
-                return true;
-            }
             Count--;
             return true;
-            
-            
-            void RemoveCurrentNode()
-            {
-                if (_root.Value.Equals(value))
-                    _root = null;
-                if (parent.Left?.Value.Equals(value) ?? false)
-                    parent.Left = null;
-                else
-                    parent.Right = null;
-                Count--;
-            }
-            
-            void pullUpNodeToRight(Node<T> node)
-            {
-                if (_root.Value.Equals(value))
-                    _root = node;
-                else parent.Right = node;
-            }
-
-            void pullUpNodeToLeft(Node<T> node)
-            {
-                if (_root.Value.Equals(value))
-                    _root = node;
-                else parent.Left = node;
-            }
         }
-
-        private Node<T> Min(Node<T> node)
+        
+        private Node<T> Delete(Node<T> node, T value)
         {
-            while (node.Left is not null)
-                node = node.Left;
-            
+            if (node is null) throw new KeyNotFoundException("Key to delete was not found.");
+            var comparison = value.CompareTo(node.Value);
+
+            if (comparison > 0)
+                node.Right = Delete(node.Right, value);
+            else if (comparison < 0)
+                node.Left = Delete(node.Left, value);
+            else
+            {
+                if (node.Left is null)
+                    return node.Right;
+                if (node.Right is null)
+                    return node.Left;
+
+                node.Value = Min(node.Right).Value;
+                node.Right = Delete(node.Right, node.Value);
+            }
+
             return node;
         }
 
         public Node<T> Min() => Min(_root);
-
-        private Node<T> Max(Node<T> node)
+        
+        private Node<T> Min(Node<T> node)
         {
-            while (node.Right is not null)
-                node = node.Right;
+            while (node?.Left is not null)
+                node = node.Left;
             
             return node;
         }
 
         public Node<T> Max() => Max(_root);
 
-        public IEnumerable<T> InOrder()
+        private Node<T> Max(Node<T> node)
         {
-            var lineage = new Stack<Node<T>>();
-            var current = _root;
-            FindNextMin(current);
+            while (node?.Right is not null)
+                node = node.Right;
             
-            while (lineage.Count > 0)
-            {
-                current = lineage.Pop();
-                yield return current.Value;
-                while (current.Right is not null)
-                {
-                    FindNextMin(current.Right);
-                    current = lineage.Pop();
-                    yield return current.Value;
-                }
-            }
-            yield break;
+            return node;
+        }
+
+        public IEnumerable<T> InOrder() => InOrder(_root);
+
+        private IEnumerable<T> InOrder(Node<T> node)
+        {
+            if (node is null) yield break;
             
-            void FindNextMin(Node<T> node)
+            if (node.Left is not null)
             {
-                while (node is not null)
-                {
-                    lineage.Push(node);
-                    node = node.Left;
-                }
+                foreach (var val in InOrder(node.Left))
+                    yield return val;
             }
+
+            yield return node.Value;
+
+            if (node.Right is not null)
+            {
+                foreach (var val in InOrder(node.Right))
+                    yield return val;
+            }        
         }
     }
 }
