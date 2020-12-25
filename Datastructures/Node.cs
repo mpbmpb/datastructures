@@ -2,9 +2,9 @@ using System;
 
 namespace Datastructures
 {
-    public class Node<T> where T : IComparable
+    public class Node<T> where T : IComparable<T>
     {
-        public T Value { get; set; }
+        public T Value { get; set; } 
         public Node<T> Left { get; set; }
         public Node<T> Right { get; set; }
 

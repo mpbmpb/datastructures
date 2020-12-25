@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Datastructures
 {
-    public class BST<T> where T : IComparable
+    public class BST<T> where T : IComparable<T>
     {
         private Node<T> _root;
         public int Count;
@@ -52,17 +53,17 @@ namespace Datastructures
             }
         }
 
-        public bool Search(T value)
+        public Node<T> Search(T value)
         {
             var current = _root;
 
             while (current is not null)
             {
                 if (current.Value.Equals(value))
-                    return true;
+                    return current;
                 current = value.CompareTo(current.Value) > 0 ? current.Right : current.Left;
             }
-            return false;
+            return null;
         }
         public bool Delete(T value)
         {
@@ -72,7 +73,7 @@ namespace Datastructures
             while (current is not null && !current.Value.Equals(value))
             {
                 parent = current;
-                current = current.Value.CompareTo(value) < 0 ? current.Right : current.Left;
+                current = value.CompareTo(current.Value) > 0 ? current.Right : current.Left;
             }
             if (current is null) return false;
 
@@ -95,7 +96,7 @@ namespace Datastructures
             }
             else
             {
-                var nextOrderedSuccessor = Min(current.Right);
+                var nextOrderedSuccessor = Min(current.Right).Value;
                 var nodeToUpdate = current;
                 Delete(nextOrderedSuccessor);
                 nodeToUpdate.Value = nextOrderedSuccessor;
@@ -131,25 +132,53 @@ namespace Datastructures
             }
         }
 
-        private T Min(Node<T> node)
+        private Node<T> Min(Node<T> node)
         {
             while (node.Left is not null)
                 node = node.Left;
             
-            return node.Value;
+            return node;
         }
 
-        public T Min() => Min(_root);
+        public Node<T> Min() => Min(_root);
 
-        private T Max(Node<T> node)
+        private Node<T> Max(Node<T> node)
         {
             while (node.Right is not null)
                 node = node.Right;
             
-            return node.Value;
+            return node;
         }
 
-        public T Max() => Max(_root);
+        public Node<T> Max() => Max(_root);
 
+        public IEnumerable<T> InOrder()
+        {
+            var lineage = new Stack<Node<T>>();
+            var current = _root;
+            FindNextMin(current);
+            
+            while (lineage.Count > 0)
+            {
+                current = lineage.Pop();
+                yield return current.Value;
+                while (current.Right is not null)
+                {
+                    FindNextMin(current.Right);
+                    current = lineage.Pop();
+                    yield return current.Value;
+                }
+            }
+            yield break;
+            
+            void FindNextMin(Node<T> node)
+            {
+                while (node is not null)
+                {
+                    lineage.Push(node);
+                    node = node.Left;
+                }
+            }
+        }
     }
 }

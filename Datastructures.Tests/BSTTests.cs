@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 using FluentAssertions;
 
@@ -63,17 +64,17 @@ namespace Datastructures.Tests
 
             var result = tree.Search(1);
 
-            result.Should().BeTrue();
+            result.Value.Should().Be(1);
         }
 
         [Fact]
-        public void Search_returns_false_if_value_doesnt_exist()
+        public void Search_returns_null_if_value_doesnt_exist()
         {
             var tree = new BST<int>();
 
             var result = tree.Search(1);
 
-            result.Should().BeFalse();
+            result.Should().BeNull();
         }
         
         [Fact]
@@ -84,7 +85,7 @@ namespace Datastructures.Tests
             var result = tree.Search(5);
 
             tree.Count.Should().Be(1);
-            result.Should().BeTrue();
+            result.Value.Should().Be(5);
         }
 
         [Fact]
@@ -115,7 +116,7 @@ namespace Datastructures.Tests
 
             var result = tree.Search(10);
 
-            result.Should().BeFalse();
+            result.Should().BeNull();
         }
 
         [Theory]
@@ -142,7 +143,7 @@ namespace Datastructures.Tests
 
             var result = tree.Search(n);
 
-            result.Should().BeFalse();
+            result.Should().BeNull();
             tree.Count.Should().Be(8);
         }
 
@@ -158,7 +159,7 @@ namespace Datastructures.Tests
             tree.Insert(9);
             tree.Insert(17);
 
-            tree.Max().Should().Be(17);
+            tree.Max().Value.Should().Be(17);
         }
 
         [Fact]
@@ -173,7 +174,28 @@ namespace Datastructures.Tests
             tree.Insert(9);
             tree.Insert(17);
 
-            tree.Min().Should().Be(2);
+            tree.Min().Value.Should().Be(2);
+        }
+
+        [Fact]
+        public void InOrder_returns_ordered_results()
+        {
+            var tree = new BST<int>(10);
+            tree.Insert(15);
+            tree.Insert(7);
+            tree.Insert(2);
+            tree.Insert(13);
+            tree.Insert(14);
+            tree.Insert(9);
+            tree.Insert(17);
+            tree.Insert(1);
+
+            var result = tree.InOrder();
+            var expected = new int[] {
+                1, 2, 7, 9, 10, 13, 14, 15, 17
+            };
+
+            result.Should().Equal(expected);
         }
     }
 }
