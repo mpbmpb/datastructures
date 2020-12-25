@@ -109,6 +109,18 @@ namespace Datastructure.Tests
 
             result.Should().BeFalse();
         }
+
+        [Fact]
+        public async Task Delete_removes_value()
+        {
+            var tree = new BST<int>(10);
+            tree.Delete(10);
+
+            var result = tree.Search(10);
+
+            result.Should().BeFalse();
+        }
+
         
     }
 }

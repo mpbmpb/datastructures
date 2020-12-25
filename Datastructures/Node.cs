@@ -7,7 +7,12 @@ namespace Datastructures
         public T Value { get; set; }
         public Node<T> Left { get; set; }
         public Node<T> Right { get; set; }
-        public bool HasValue => Value is not null;
+
+        public bool IsParentOf(T value)
+        {
+            return (Left is not null && Left.Value.Equals(value))  
+                   || (Right is not null && Right.Value.Equals(value));
+        }
         
         
 
