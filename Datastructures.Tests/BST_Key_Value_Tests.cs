@@ -69,7 +69,7 @@ namespace Datastructures.Tests
             var tree = new BST<int, string>(10, "house");
             tree.Insert(15, "horse");
             tree.Insert(7, "hound");
-            tree.Insert(2, "baskerville");
+            tree.Insert(2, "Baskerville");
             tree.Insert(13, "bird");
             tree.Insert(14, "dog");
             tree.Insert(9, "bird-dog");
@@ -135,5 +135,96 @@ namespace Datastructures.Tests
             result.Should().BeNull();
             tree.Count.Should().Be(0);
         }
+        
+        [Theory]
+        [InlineData(10)]
+        [InlineData(15)]
+        [InlineData(13)]
+        [InlineData(17)]
+        [InlineData(7)]
+        [InlineData(2)]
+        [InlineData(9)]
+        [InlineData(1)]
+        public void Delete_only_removes_given_value(int n)
+        {
+            var tree = new BST<int, string>(10, "house");
+            tree.Insert(15, "horse");
+            tree.Insert(7, "hound");
+            tree.Insert(2, "Baskerville");
+            tree.Insert(13, "bird");
+            tree.Insert(14, "dog");
+            tree.Insert(9, "bird-dog");
+            tree.Insert(17, "starling");
+            tree.Insert(1, "shrimp");
+            tree.Delete(n);
+
+            var result = tree.Search(n);
+
+            result.Should().BeNull();
+            tree.Count.Should().Be(8);
+        }
+        
+        [Fact]
+        public void Min_returns_node_with_smallest_key()
+        {
+            var tree = new BST<int, string>(10, "house");
+            tree.Insert(15, "horse");
+            tree.Insert(7, "hound");
+            tree.Insert(2, "Baskerville");
+            tree.Insert(13, "bird");
+            tree.Insert(14, "dog");
+            tree.Insert(9, "bird-dog");
+            tree.Insert(17, "starling");
+
+            tree.Min().Value.Should().Be("Baskerville");
+        }
+        [Fact]
+        public void Max_returns_node_with_largest_key()
+        {
+            var tree = new BST<int, string>(10, "house");
+            tree.Insert(15, "horse");
+            tree.Insert(7, "hound");
+            tree.Insert(2, "Baskerville");
+            tree.Insert(13, "bird");
+            tree.Insert(14, "dog");
+            tree.Insert(9, "bird-dog");
+            tree.Insert(17, "starling");
+
+            tree.Max().Value.Should().Be("starling");
+        }
+
+        [Fact]
+        public void InOrder_returns_ordered_results()
+        {
+            var tree = new BST<int, string>(10, "house");
+            tree.Insert(15, "horse");
+            tree.Insert(7, "hound");
+            tree.Insert(2, "Baskerville");
+            tree.Insert(13, "bird");
+            tree.Insert(14, "dog");
+            tree.Insert(9, "bird-dog");
+            tree.Insert(17, "starling");
+            tree.Insert(1, "shrimp");
+
+            var result = tree.InOrder();
+            var expected = new string[] 
+            { "shrimp", "Baskerville", "hound", "bird-dog", "house", "bird", "dog", "horse", "starling" };
+
+            result.Should().Equal(expected);
+        }
+        
+        [Fact]
+        public void Null_tests()
+        {
+            var tree = new BST<int, string>();
+
+            tree.Max().Should().BeNull();
+            tree.Min().Should().BeNull();
+            tree.Search(1).Should().BeNull();
+            tree.InOrder().Should().BeEmpty();
+            tree.Count.Should().Be(0);
+            tree.Delete(1).Should().BeFalse();
+        }
+
     }
 }

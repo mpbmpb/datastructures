@@ -119,7 +119,7 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Delete_removes_value()
+        public void Delete_removes_node()
         {
             var tree = new BST<int>(10);
             tree.Delete(10);

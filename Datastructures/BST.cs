@@ -242,5 +242,35 @@ namespace Datastructures
             return node;
         }
 
+        public Node<TKey, TValue> Max() => Max(_root);
+
+        private Node<TKey, TValue> Max(Node<TKey, TValue> node)
+        {
+            while (node?.Right is not null)
+                node = node.Right;
+            
+            return node;
+        }
+        
+        public IEnumerable<TValue> InOrder() => InOrder(_root);
+
+        private IEnumerable<TValue> InOrder(Node<TKey, TValue> node)
+        {
+            if (node is null) yield break;
+            
+            if (node.Left is not null)
+            {
+                foreach (var val in InOrder(node.Left))
+                    yield return val;
+            }
+
+            yield return node.Value;
+
+            if (node.Right is not null)
+            {
+                foreach (var val in InOrder(node.Right))
+                    yield return val;
+            }        
+        }
     }
 }
