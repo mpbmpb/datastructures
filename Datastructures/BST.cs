@@ -137,4 +137,110 @@ namespace Datastructures
             }        
         }
     }
+
+    public class BST<TKey, TValue> where TKey : IComparable<TKey>
+    {
+        private Node<TKey, TValue> _root;
+        public int Count;
+
+        public BST()
+        {
+        }
+        public BST(TKey key, TValue value)
+        {
+            _root = new (key, value);
+            Count = 1;
+        }
+        
+        public bool Insert(TKey key, TValue value)
+        {
+            try
+            {
+                _root = Insert(_root, key, value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            Count++;
+            return true;
+        }
+
+        private Node<TKey, TValue> Insert(Node<TKey, TValue> node, TKey key, TValue value)
+        {
+            if (node is null)
+                return new (key, value);
+            if (node.Key.Equals(key))
+                throw new ArgumentException("Key already exists.");
+            if (key.CompareTo(node.Key) > 0)
+                node.Right = Insert(node.Right, key, value);
+            else node.Left = Insert(node.Left, key, value);
+            
+            return node;
+        }
+        
+        public Node<TKey, TValue> Search(TKey key)
+        {
+            var current = _root;
+
+            while (current is not null)
+            {
+                if (current.Key.Equals(key))
+                    return current;
+                current = key.CompareTo(current.Key) > 0 ? current.Right : current.Left;
+            }
+            return null;
+        }
+        
+                
+        public bool Delete(TKey key)
+        {
+            try
+            {
+                _root = Delete(_root, key);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            Count--;
+            return true;
+        }
+        
+        private Node<TKey, TValue> Delete(Node<TKey, TValue> node, TKey key)
+        {
+            if (node is null) throw new KeyNotFoundException("Key to delete was not found.");
+            var comparison = key.CompareTo(node.Key);
+
+            if (comparison > 0)
+                node.Right = Delete(node.Right, key);
+            else if (comparison < 0)
+                node.Left = Delete(node.Left, key);
+            else
+            {
+                if (node.Left is null)
+                    return node.Right;
+                if (node.Right is null)
+                    return node.Left;
+
+                node.Key = Min(node.Right).Key;
+                node.Right = Delete(node.Right, node.Key);
+            }
+
+            return node;
+        }
+        
+        public Node<TKey, TValue> Min() => Min(_root);
+        
+        private Node<TKey, TValue> Min(Node<TKey, TValue> node)
+        {
+            while (node?.Left is not null)
+                node = node.Left;
+            
+            return node;
+        }
+
+    }
 }

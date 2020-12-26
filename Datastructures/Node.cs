@@ -13,4 +13,18 @@ namespace Datastructures
             Value = value;
         }
     }
+
+    public class Node<TKey, TValue> where TKey : IComparable<TKey>
+    {
+        public TKey Key { get; set; }
+        public TValue Value { get; set; }
+        public Node<TKey, TValue> Left { get; set; }
+        public Node<TKey, TValue> Right { get; set; }
+
+        public Node(TKey key, TValue value)
+        {
+            Key = key;
+            Value = value;
+        }
+    }
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using Xunit;
 using FluentAssertions;
 
@@ -55,16 +54,27 @@ namespace Datastructures.Tests
             result.Should().Be(n);
         }
 
-        [Fact]
-        public void Search_returns_true_if_value_exists()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(8)]
+        [InlineData(11)]
+        [InlineData(12)]
+        [InlineData(17)]
+        public void Search_returns_true_if_value_exists(int n)
         {
-            var tree = new BST<int>();
+            var tree = new BST<int>(10);
+            tree.Insert(15);
+            tree.Insert(7);
+            tree.Insert(2);
+            tree.Insert(13);
+            tree.Insert(14);
+            tree.Insert(9);
+            tree.Insert(n);
 
-            tree.Insert(1);
+            var result = tree.Search(n);
 
-            var result = tree.Search(1);
-
-            result.Value.Should().Be(1);
+            result.Value.Should().Be(n);
         }
 
         [Fact]
@@ -117,6 +127,7 @@ namespace Datastructures.Tests
             var result = tree.Search(10);
 
             result.Should().BeNull();
+            tree.Count.Should().Be(0);
         }
 
         [Theory]
