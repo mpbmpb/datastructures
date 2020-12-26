@@ -6,7 +6,7 @@ namespace Datastructures
     public class BST<T> where T : IComparable<T>
     {
         private Node<T> _root;
-        public int Count;
+        public int Count { get; private set; }
 
         public BST()
         {

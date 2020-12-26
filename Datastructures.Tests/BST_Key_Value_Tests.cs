@@ -17,7 +17,7 @@ namespace Datastructures.Tests
         }
         
         [Fact]
-        public void Add_unique_key_to_BST_returns_true()
+        public void Insert_unique_key_to_BST_returns_true()
         {
             var tree = new BST<int, string>();
 
@@ -28,7 +28,7 @@ namespace Datastructures.Tests
 
         
         [Fact]
-        public void Add_duplicate_key_to_BST_returns_false()
+        public void Insert_duplicate_key_to_BST_returns_false()
         {
             var tree = new BST<int, string>();
 
@@ -44,7 +44,7 @@ namespace Datastructures.Tests
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(5)]
-        public void Add_unique_value_increases_count(int n)
+        public void Insert_unique_value_increases_count(int n)
         {
             var tree = new BST<int, string>();
 
