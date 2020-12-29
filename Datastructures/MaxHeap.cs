@@ -235,8 +235,8 @@ namespace Datastructures
             if (key is null || key.CompareTo(default) == 0)
                 return Enumerable.Empty<int>();
             return _array.Where( entry => entry.CompareTo(default) != 0)
-                .Select((x, i) => new Tuple<TKey, int>(x.Key, i))
-                .Where(t => t.Item1.CompareTo(key) == 0).Select(t => t.Item2);
+                .Select((x, i) => (Key: x.Key, Index: i))
+                .Where(t => t.Key.CompareTo(key) == 0).Select(t => t.Index);
         }
 
         public (TKey Key, TValue value) Delete() => Count == 0 ? default : DeleteAtIndex(0);
