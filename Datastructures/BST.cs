@@ -96,6 +96,12 @@ namespace Datastructures
             return node;
         }
 
+        public void Clear()
+        {
+            _root = null;
+            Count = 0;
+        }
+
         public Node<T> Min() => Min(_root);
         
         private Node<T> Min(Node<T> node)

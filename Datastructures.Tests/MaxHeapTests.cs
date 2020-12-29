@@ -231,6 +231,7 @@ namespace Datastructures.Tests
             heap.Insert(5);
             heap.Insert(10);
             heap.Insert(-20);
+            
             var result = heap.Delete();
 
             result.Should().Be(10);
@@ -245,12 +246,28 @@ namespace Datastructures.Tests
             heap.Insert(5);
             heap.Insert(10);
             heap.Insert(-20);
+            
             heap.Delete(10);
-
             var result = heap.Values();
-            var expected = new int[] {5, 1, 3, -20};
+            var expected = new int[] { 5, 1, 3, -20 };
 
             result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void Replace_pops_max_and_inserts_value()
+        {
+            var heap = new MaxHeap<int>(1);
+            heap.Insert(3);
+            heap.Insert(5);
+            heap.Insert(10);
+            heap.Insert(-20);
+
+            var result = heap.Replace(-1);
+            var expected = new int[] { 5, 1, 3, -1, -20 };
+
+            result.Should().Be(10);
+            heap.Values().Should().Equal(expected);
         }
         
         [Fact]
