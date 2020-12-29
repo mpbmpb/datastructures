@@ -136,31 +136,29 @@ namespace Datastructures
     }
         public class MaxHeap<TKey, TValue> where TKey : IComparable<TKey>
     {
-        private Tuple<TKey, TValue>[] _array;
+        private (TKey Key, TValue Value)[] _array;
         public int Count { get; private set; }
         private int _capacity = 4;
         private static int ParentOf(int index) => (index - 1) / 2;
         private static int LeftOf(int index) => index * 2 + 1;
         private static int RightOf(int index) => index * 2 + 2;
-        public Tuple<TKey, TValue>Max() => _array[0];
+        public (TKey, TValue)? Max() => Count == 0 ? null : _array[0];
 
         public IEnumerable<TValue> Values()
         {
             for (int i = 0; i < Count; i++)
-            {
-                yield return _array[i].Item2;
-            }
+                yield return _array[i].Value;
         }
         
         public MaxHeap()
         {
-            _array = new Tuple<TKey, TValue>[_capacity];
+            _array = new (TKey Key, TValue value)[_capacity];
         }
         
         public MaxHeap(TKey key, TValue value, int initialCapacity = 4)
         {
             _capacity = initialCapacity;
-            _array = new Tuple<TKey, TValue>[_capacity];
+            _array = new (TKey Key, TValue value)[_capacity];
             Insert(key, value);
         }
 
@@ -181,7 +179,7 @@ namespace Datastructures
         {
             while (true)
             {
-                if (_array[ParentOf(index)].Item1.CompareTo(_array[index].Item1) < 0)
+                if (_array[ParentOf(index)].Key.CompareTo(_array[index].Key) < 0)
                 {
                     Swap(ParentOf(index), index);
                     index = ParentOf(index);
@@ -196,9 +194,9 @@ namespace Datastructures
             {
                 if (LeftOf(index) >= Count)
                     break;
-                var compare = RightOf(index) >= Count ? 1 : _array[LeftOf(index)].Item1.CompareTo(_array[RightOf(index)].Item1);
+                var compare = RightOf(index) >= Count ? 1 : _array[LeftOf(index)].Key.CompareTo(_array[RightOf(index)].Key);
                 var childIndex = compare > 0 ? LeftOf(index) : RightOf(index);
-                if (_array[childIndex].Item1.CompareTo(_array[index].Item1) > 0)
+                if (_array[childIndex].Key.CompareTo(_array[index].Key) > 0)
                 {
                     Swap(index, childIndex);
                     index = childIndex;
@@ -217,7 +215,7 @@ namespace Datastructures
         private void Grow()
         {
             _capacity *= 2;
-            var newArray = new Tuple<TKey, TValue>[_capacity];
+            var newArray = new (TKey Key, TValue value)[_capacity];
             Array.Copy(_array, newArray, Count);
             _array = newArray;
         }
@@ -228,20 +226,20 @@ namespace Datastructures
                 throw new InvalidOperationException(
                     "Default key can not be inserted nor used as a search argument because the array " +
                     "is already initialised with default keys.");
-            return _array.Where(x => x != null && x.Item1.CompareTo(key) == 0)
-                .Select(t => t.Item2);
+            return _array.Where(x => x.CompareTo(default) != 0 && x.Key.CompareTo(key) == 0)
+                .Select(t => t.Value);
         }
 
         private IEnumerable<int> IndexOf(TKey key)
         {
             if (key is null || key.CompareTo(default) == 0)
                 return Enumerable.Empty<int>();
-            return _array.Where( entry => entry is not null)
-                .Select((x, i) => new Tuple<TKey, int>(x.Item1, i))
+            return _array.Where( entry => entry.CompareTo(default) != 0)
+                .Select((x, i) => new Tuple<TKey, int>(x.Key, i))
                 .Where(t => t.Item1.CompareTo(key) == 0).Select(t => t.Item2);
         }
 
-        public Tuple<TKey, TValue> Delete() => Count == 0 ? default : DeleteAtIndex(0);
+        public (TKey Key, TValue value) Delete() => Count == 0 ? default : DeleteAtIndex(0);
          
         public TValue Delete(TKey key)
         {
@@ -249,11 +247,11 @@ namespace Datastructures
             if (!indices.Any())
                 return default;
             var index = indices.FirstOrDefault();
-            var value = _array[index].Item2;
+            var value = _array[index].Value;
             DeleteAtIndex(index);
             return value;
         }
-        public Tuple<TKey, TValue> DeleteAtIndex(int index)
+        public (TKey Key, TValue value) DeleteAtIndex(int index)
         {
             if (index >= Count)
                 throw new IndexOutOfRangeException();
@@ -263,13 +261,13 @@ namespace Datastructures
             Count--;
             if (index == Count)
                 return tuple;
-            if (_array[index].Item1.CompareTo(_array[ParentOf(index)].Item1) > 0)
+            if (_array[index].Key.CompareTo(_array[ParentOf(index)].Key) > 0)
                 BubbleUp(index);
             else BubbleDown(index);
             return tuple;
         }
         
-        public Tuple<TKey, TValue>Replace(TKey key, TValue value)
+        public (TKey Key, TValue value)Replace(TKey key, TValue value)
         {
             if (key is null || key.CompareTo(default) == 0)
                 throw new InvalidOperationException(

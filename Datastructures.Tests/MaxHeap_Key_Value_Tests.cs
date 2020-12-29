@@ -113,8 +113,9 @@ namespace Datastructures.Tests
             heap.Insert(-20, "bird");
             
             var result = heap.Max();
+            var expected = (1000, "hound");
 
-            result.Item1.Should().Be(1000);
+            result.Should().Be(expected);
         }
 
         [Fact]
@@ -179,8 +180,9 @@ namespace Datastructures.Tests
             heap.Insert(-20, "bird");
 
             var result = heap.Max();
+            var expected = (10, "hound");
 
-            result.Item1.Should().Be(10);
+            result.Should().Be(expected);
         }
 
         [Theory]
@@ -245,7 +247,7 @@ namespace Datastructures.Tests
             
             var result = heap.Delete();
 
-            result.Item1.Should().Be(10);
+            result.Key.Should().Be(10);
             heap.Search(10).Should().BeEmpty();
         }
 
@@ -277,7 +279,7 @@ namespace Datastructures.Tests
             var result = heap.Replace(-1, "dog");
             var expected = new string[] { "hound", "house", "horse", "dog", "bird" };
 
-            result.Item1.Should().Be(10);
+            result.Key.Should().Be(10);
             heap.Values().Should().Equal(expected);
         }
         
