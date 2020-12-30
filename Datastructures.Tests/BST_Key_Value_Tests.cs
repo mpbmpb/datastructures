@@ -17,24 +17,24 @@ namespace Datastructures.Tests
         }
         
         [Fact]
-        public void Insert_unique_key_to_BST_returns_true()
+        public void Add_unique_key_to_BST_returns_true()
         {
             var tree = new BST<int, string>();
 
-            var result = tree.Insert(1, "house");
+            var result = tree.Add(1, "house");
 
             result.Should().BeTrue();
         }
 
         
         [Fact]
-        public void Insert_duplicate_key_to_BST_returns_false()
+        public void Add_duplicate_key_to_BST_returns_false()
         {
             var tree = new BST<int, string>();
 
-            tree.Insert(1, "house");
+            tree.Add(1, "house");
             
-            var result = tree.Insert(1, "horse");
+            var result = tree.Add(1, "horse");
             
             result.Should().BeFalse();
         }
@@ -44,12 +44,12 @@ namespace Datastructures.Tests
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(5)]
-        public void Insert_unique_value_increases_count(int n)
+        public void Add_unique_value_increases_count(int n)
         {
             var tree = new BST<int, string>();
 
             for (int i = 1; i <= n; i++)
-                tree.Insert(i, ('a' + i).ToString());
+                tree.Add(i, ('a' + i).ToString());
             
             var result = tree.Count;
             
@@ -67,14 +67,14 @@ namespace Datastructures.Tests
         public void Search_returns_value_if_key_exists(int n)
         {
             var tree = new BST<int, string>(10, "house");
-            tree.Insert(15, "horse");
-            tree.Insert(7, "hound");
-            tree.Insert(2, "Baskerville");
-            tree.Insert(13, "bird");
-            tree.Insert(14, "dog");
-            tree.Insert(9, "bird-dog");
+            tree.Add(15, "horse");
+            tree.Add(7, "hound");
+            tree.Add(2, "Baskerville");
+            tree.Add(13, "bird");
+            tree.Add(14, "dog");
+            tree.Add(9, "bird-dog");
             var expected = "final";
-            tree.Insert(n, expected);
+            tree.Add(n, expected);
 
             var result = tree.Search(n);
 
@@ -93,7 +93,7 @@ namespace Datastructures.Tests
         }
         
         [Fact]
-        public void Constructor_inserts_value_if_provided()
+        public void Constructor_adds_value_if_provided()
         {
             var expected = "house";
             var tree = new BST<int, string>(5, expected);
@@ -148,14 +148,14 @@ namespace Datastructures.Tests
         public void Delete_only_removes_given_value(int n)
         {
             var tree = new BST<int, string>(10, "house");
-            tree.Insert(15, "horse");
-            tree.Insert(7, "hound");
-            tree.Insert(2, "Baskerville");
-            tree.Insert(13, "bird");
-            tree.Insert(14, "dog");
-            tree.Insert(9, "bird-dog");
-            tree.Insert(17, "starling");
-            tree.Insert(1, "shrimp");
+            tree.Add(15, "horse");
+            tree.Add(7, "hound");
+            tree.Add(2, "Baskerville");
+            tree.Add(13, "bird");
+            tree.Add(14, "dog");
+            tree.Add(9, "bird-dog");
+            tree.Add(17, "starling");
+            tree.Add(1, "shrimp");
             tree.Delete(n);
 
             var result = tree.Search(n);
@@ -168,13 +168,13 @@ namespace Datastructures.Tests
         public void Min_returns_node_with_smallest_key()
         {
             var tree = new BST<int, string>(10, "house");
-            tree.Insert(15, "horse");
-            tree.Insert(7, "hound");
-            tree.Insert(2, "Baskerville");
-            tree.Insert(13, "bird");
-            tree.Insert(14, "dog");
-            tree.Insert(9, "bird-dog");
-            tree.Insert(17, "starling");
+            tree.Add(15, "horse");
+            tree.Add(7, "hound");
+            tree.Add(2, "Baskerville");
+            tree.Add(13, "bird");
+            tree.Add(14, "dog");
+            tree.Add(9, "bird-dog");
+            tree.Add(17, "starling");
 
             tree.Min().Value.Should().Be("Baskerville");
         }
@@ -182,13 +182,13 @@ namespace Datastructures.Tests
         public void Max_returns_node_with_largest_key()
         {
             var tree = new BST<int, string>(10, "house");
-            tree.Insert(15, "horse");
-            tree.Insert(7, "hound");
-            tree.Insert(2, "Baskerville");
-            tree.Insert(13, "bird");
-            tree.Insert(14, "dog");
-            tree.Insert(9, "bird-dog");
-            tree.Insert(17, "starling");
+            tree.Add(15, "horse");
+            tree.Add(7, "hound");
+            tree.Add(2, "Baskerville");
+            tree.Add(13, "bird");
+            tree.Add(14, "dog");
+            tree.Add(9, "bird-dog");
+            tree.Add(17, "starling");
 
             tree.Max().Value.Should().Be("starling");
         }
@@ -197,14 +197,14 @@ namespace Datastructures.Tests
         public void InOrder_returns_ordered_results()
         {
             var tree = new BST<int, string>(10, "house");
-            tree.Insert(15, "horse");
-            tree.Insert(7, "hound");
-            tree.Insert(2, "Baskerville");
-            tree.Insert(13, "bird");
-            tree.Insert(14, "dog");
-            tree.Insert(9, "bird-dog");
-            tree.Insert(17, "starling");
-            tree.Insert(1, "shrimp");
+            tree.Add(15, "horse");
+            tree.Add(7, "hound");
+            tree.Add(2, "Baskerville");
+            tree.Add(13, "bird");
+            tree.Add(14, "dog");
+            tree.Add(9, "bird-dog");
+            tree.Add(17, "starling");
+            tree.Add(1, "shrimp");
 
             var result = tree.InOrder();
             var expected = new string[] 

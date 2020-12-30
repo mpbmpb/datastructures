@@ -25,13 +25,13 @@ namespace Datastructures.Tests
         [InlineData(2)]
         [InlineData(5)]
         [InlineData(23)]
-        public void Insert_increases_count(int n)
+        public void Add_increases_count(int n)
         {
             var heap = new MaxHeap<int, string>();
 
             for (int key = 1; key <= n; key++)
             {
-                heap.Insert(key, ('a' + key).ToString());
+                heap.Add(key, ('a' + key).ToString());
             }
             var result = heap.Count;
 
@@ -39,7 +39,7 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Constructor_inserts_value_if_provided()
+        public void Constructor_adds_value_if_provided()
         {
             var heap = new MaxHeap<int, string>(1, "house");
             var result = heap.Count;
@@ -63,10 +63,10 @@ namespace Datastructures.Tests
         public void Heap_array_grows_after_4_insertions()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(8, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(8, "Baskerville");
+            heap.Add(-20, "bird");
             
             var capacity = heap.GetType().GetField("_capacity", BindingFlags.NonPublic | BindingFlags.Instance);
             var result = (int)capacity.GetValue(heap);
@@ -75,7 +75,7 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Insert_throws_exception_when_given_default_value_for_key()
+        public void Add_throws_exception_when_given_default_value_for_key()
         {
             var heap = new MaxHeap<int, string>();
             var stringHeap = new MaxHeap<string>();
@@ -83,7 +83,7 @@ namespace Datastructures.Tests
             Exception resultString = null;
             try
             {
-                heap.Insert(0, "house");
+                heap.Add(0, "house");
             }
             catch (Exception e)
             {
@@ -92,7 +92,7 @@ namespace Datastructures.Tests
 
             try
             {
-                stringHeap.Insert(null);
+                stringHeap.Add(null);
             }
             catch (Exception e)
             {
@@ -104,13 +104,13 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Insert_places_max_value_at_pos_0_of_array()
+        public void Add_places_max_value_at_pos_0_of_array()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(1000, "hound");
-            heap.Insert(8, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(1000, "hound");
+            heap.Add(8, "Baskerville");
+            heap.Add(-20, "bird");
             
             var result = heap.Max();
             var expected = (1000, "hound");
@@ -122,10 +122,10 @@ namespace Datastructures.Tests
         public void Values_returns_all_values()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
 
             var result = heap.Values();
             var expected = new string[] {"hound", "house", "horse", "Baskerville", "bird" };
@@ -134,15 +134,15 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Insert_preserves_MaxHeap_property()
+        public void Add_preserves_MaxHeap_property()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
-            heap.Insert(8, "dog");
-            heap.Insert(9, "bird-dog");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
+            heap.Add(8, "dog");
+            heap.Add(9, "bird-dog");
             
             var result = heap.Values();
             var expected = new string[] {"hound", "house", "bird-dog", "Baskerville", "bird", "horse", "dog" };
@@ -160,10 +160,10 @@ namespace Datastructures.Tests
         public void Search_returns_value_if_found(int key, string expected)
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
 
             var result = heap.Search(key);
 
@@ -174,10 +174,10 @@ namespace Datastructures.Tests
         public void Max_returns_tuple_with_max_key()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
 
             var result = heap.Max();
             var expected = (10, "hound");
@@ -195,10 +195,10 @@ namespace Datastructures.Tests
         public void Delete_returns_value_when_successful(int key, string expected)
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
 
             var result = heap.Delete(key);
 
@@ -224,10 +224,10 @@ namespace Datastructures.Tests
         public void Delete_removes_value_if_found(int key, int expected)
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
             heap.Delete(key);
 
             var result = heap.Search(key);
@@ -240,10 +240,10 @@ namespace Datastructures.Tests
         public void Delete_removes_max_when_not_given_arguments()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(10, "hound");
-            heap.Insert(-1, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(10, "hound");
+            heap.Add(-1, "Baskerville");
+            heap.Add(-20, "bird");
             
             var result = heap.Delete();
 
@@ -255,10 +255,10 @@ namespace Datastructures.Tests
         public void Delete_preserves_MaxHeap_property()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(5, "hound");
-            heap.Insert(10, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(5, "hound");
+            heap.Add(10, "Baskerville");
+            heap.Add(-20, "bird");
             
             heap.Delete();
             var result = heap.Values();
@@ -268,13 +268,13 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Replace_pops_max_and_inserts_new_key_value()
+        public void Replace_pops_max_and_adds_new_key_value()
         {
             var heap = new MaxHeap<int, string>(1, "house");
-            heap.Insert(3, "horse");
-            heap.Insert(5, "hound");
-            heap.Insert(10, "Baskerville");
-            heap.Insert(-20, "bird");
+            heap.Add(3, "horse");
+            heap.Add(5, "hound");
+            heap.Add(10, "Baskerville");
+            heap.Add(-20, "bird");
 
             var result = heap.Replace(-1, "dog");
             var expected = new string[] { "hound", "house", "horse", "dog", "bird" };

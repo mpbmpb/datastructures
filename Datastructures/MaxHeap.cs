@@ -31,11 +31,11 @@ namespace Datastructures
         {
             _capacity = initialCapacity;
             _array = new T[_capacity];
-            Insert(value);
+            Add(value);
         }
 
 
-        public void Insert(T value)
+        public void Add(T value)
         {
             if (value is null || value.CompareTo(default) == 0)
                 throw new InvalidOperationException(
@@ -159,11 +159,11 @@ namespace Datastructures
         {
             _capacity = initialCapacity;
             _array = new (TKey Key, TValue value)[_capacity];
-            Insert(key, value);
+            Add(key, value);
         }
 
 
-        public void Insert(TKey key, TValue value)
+        public void Add(TKey key, TValue value)
         {
             if (key is null || key.CompareTo(default) == 0)
                 throw new InvalidOperationException(
@@ -305,11 +305,11 @@ namespace Datastructures
         {
             _capacity = initialCapacity;
             _array = new int?[_capacity];
-            Insert(value);
+            Add(value);
         }
 
 
-        public void Insert(int value)
+        public void Add(int value)
         {
             if (Count == _capacity)
                 Grow();

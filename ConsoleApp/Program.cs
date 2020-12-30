@@ -9,14 +9,14 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             var tree = new BST<int>();
-            // tree.Insert(15);
-            // tree.Insert(7);
-            // tree.Insert(2);
-            // tree.Insert(13);
-            // tree.Insert(14);
-            // tree.Insert(9);
-            // tree.Insert(17);
-            // tree.Insert(1);
+            // tree.Add(15);
+            // tree.Add(7);
+            // tree.Add(2);
+            // tree.Add(13);
+            // tree.Add(14);
+            // tree.Add(9);
+            // tree.Add(17);
+            // tree.Add(1);
             
             tree.InOrder().ToList().ForEach(Console.WriteLine);
 

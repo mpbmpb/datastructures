@@ -17,11 +17,11 @@ namespace Datastructures
             Count = 1;
         }
 
-        public bool Insert(T value)
+        public bool Add(T value)
         {
             try
             {
-                _root = Insert(_root, value);
+                _root = Add(_root, value);
             }
             catch (Exception)
             {
@@ -32,15 +32,15 @@ namespace Datastructures
             return true;
         }
 
-        private Node<T> Insert(Node<T> node, T value)
+        private Node<T> Add(Node<T> node, T value)
         {
             if (node is null)
                 return new Node<T>(value);
             if (node.Value.Equals(value))
                 throw new ArgumentException("Key already exists.");
             if (value.CompareTo(node.Value) > 0)
-                node.Right = Insert(node.Right, value);
-            else node.Left = Insert(node.Left, value);
+                node.Right = Add(node.Right, value);
+            else node.Left = Add(node.Left, value);
             
             return node;
         }
@@ -158,11 +158,11 @@ namespace Datastructures
             Count = 1;
         }
         
-        public bool Insert(TKey key, TValue value)
+        public bool Add(TKey key, TValue value)
         {
             try
             {
-                _root = Insert(_root, key, value);
+                _root = Add(_root, key, value);
             }
             catch (Exception)
             {
@@ -173,15 +173,15 @@ namespace Datastructures
             return true;
         }
 
-        private Node<TKey, TValue> Insert(Node<TKey, TValue> node, TKey key, TValue value)
+        private Node<TKey, TValue> Add(Node<TKey, TValue> node, TKey key, TValue value)
         {
             if (node is null)
                 return new (key, value);
             if (node.Key.Equals(key))
                 throw new ArgumentException("Key already exists.");
             if (key.CompareTo(node.Key) > 0)
-                node.Right = Insert(node.Right, key, value);
-            else node.Left = Insert(node.Left, key, value);
+                node.Right = Add(node.Right, key, value);
+            else node.Left = Add(node.Left, key, value);
             
             return node;
         }

@@ -3,7 +3,7 @@ using FluentAssertions;
 
 namespace Datastructures.Tests
 {
-    public class BSTTests
+    public class BST_Tests
     {
         [Fact]
         public void New_BST_has_count_0()
@@ -16,23 +16,23 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Insert_unique_value_to_BST_returns_true()
+        public void Add_unique_value_to_BST_returns_true()
         {
             var tree = new BST<int>();
 
-            var result = tree.Insert(1);
+            var result = tree.Add(1);
 
             result.Should().BeTrue();
         }
 
         [Fact]
-        public void Insert_duplicate_value_to_BST_returns_false()
+        public void Add_duplicate_value_to_BST_returns_false()
         {
             var tree = new BST<int>();
 
-            tree.Insert(1);
+            tree.Add(1);
             
-            var result = tree.Insert(1);
+            var result = tree.Add(1);
             
             result.Should().BeFalse();
         }
@@ -42,12 +42,12 @@ namespace Datastructures.Tests
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(5)]
-        public void Insert_unique_value_increases_count(int n)
+        public void Add_unique_value_increases_count(int n)
         {
             var tree = new BST<int>();
 
             for (int i = 1; i <= n; i++)
-                tree.Insert(i);
+                tree.Add(i);
             
             var result = tree.Count;
             
@@ -64,13 +64,13 @@ namespace Datastructures.Tests
         public void Search_returns_true_if_value_exists(int n)
         {
             var tree = new BST<int>(10);
-            tree.Insert(15);
-            tree.Insert(7);
-            tree.Insert(2);
-            tree.Insert(13);
-            tree.Insert(14);
-            tree.Insert(9);
-            tree.Insert(n);
+            tree.Add(15);
+            tree.Add(7);
+            tree.Add(2);
+            tree.Add(13);
+            tree.Add(14);
+            tree.Add(9);
+            tree.Add(n);
 
             var result = tree.Search(n);
 
@@ -88,7 +88,7 @@ namespace Datastructures.Tests
         }
         
         [Fact]
-        public void Constructor_inserts_value_if_provided()
+        public void Constructor_adds_value_if_provided()
         {
             var tree = new BST<int>(5);
 
@@ -142,14 +142,14 @@ namespace Datastructures.Tests
         public void Delete_only_removes_given_value(int n)
         {
             var tree = new BST<int>(10);
-            tree.Insert(15);
-            tree.Insert(7);
-            tree.Insert(2);
-            tree.Insert(13);
-            tree.Insert(14);
-            tree.Insert(9);
-            tree.Insert(17);
-            tree.Insert(1);
+            tree.Add(15);
+            tree.Add(7);
+            tree.Add(2);
+            tree.Add(13);
+            tree.Add(14);
+            tree.Add(9);
+            tree.Add(17);
+            tree.Add(1);
             tree.Delete(n);
 
             var result = tree.Search(n);
@@ -162,13 +162,13 @@ namespace Datastructures.Tests
         public void Max_returns_largest_value()
         {
             var tree = new BST<int>(10);
-            tree.Insert(15);
-            tree.Insert(7);
-            tree.Insert(2);
-            tree.Insert(13);
-            tree.Insert(14);
-            tree.Insert(9);
-            tree.Insert(17);
+            tree.Add(15);
+            tree.Add(7);
+            tree.Add(2);
+            tree.Add(13);
+            tree.Add(14);
+            tree.Add(9);
+            tree.Add(17);
 
             tree.Max().Value.Should().Be(17);
         }
@@ -177,13 +177,13 @@ namespace Datastructures.Tests
         public void Min_returns_smallest_value()
         {
             var tree = new BST<int>(10);
-            tree.Insert(15);
-            tree.Insert(7);
-            tree.Insert(2);
-            tree.Insert(13);
-            tree.Insert(14);
-            tree.Insert(9);
-            tree.Insert(17);
+            tree.Add(15);
+            tree.Add(7);
+            tree.Add(2);
+            tree.Add(13);
+            tree.Add(14);
+            tree.Add(9);
+            tree.Add(17);
 
             tree.Min().Value.Should().Be(2);
         }
@@ -192,14 +192,14 @@ namespace Datastructures.Tests
         public void InOrder_returns_ordered_results()
         {
             var tree = new BST<int>(10);
-            tree.Insert(15);
-            tree.Insert(7);
-            tree.Insert(2);
-            tree.Insert(13);
-            tree.Insert(14);
-            tree.Insert(9);
-            tree.Insert(17);
-            tree.Insert(1);
+            tree.Add(15);
+            tree.Add(7);
+            tree.Add(2);
+            tree.Add(13);
+            tree.Add(14);
+            tree.Add(9);
+            tree.Add(17);
+            tree.Add(1);
 
             var result = tree.InOrder();
             var expected = new int[] {
