@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Datastructures;
 
@@ -8,18 +9,20 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var tree = new BST<int>();
-            // tree.Add(15);
-            // tree.Add(7);
-            // tree.Add(2);
-            // tree.Add(13);
-            // tree.Add(14);
-            // tree.Add(9);
-            // tree.Add(17);
-            // tree.Add(1);
-            
-            tree.InOrder().ToList().ForEach(Console.WriteLine);
-
+            var tree = new AVLTree<int>();
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 1; i <= 40000; i++)
+            {
+                tree.Add(i);
+            }
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
+            Console.ReadKey();
+            sw.Restart();
+            Console.WriteLine(tree.Search(38769));
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
             var tree2 = new BST<int>();
             Console.WriteLine(tree2.Min() is null);
         }

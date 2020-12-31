@@ -41,8 +41,7 @@ namespace Datastructures
                 {
                     node.Right = new (value, node);
                     Count++;
-                    if (node.Height == 1)
-                        UpdateHeightRecursive(node, 2);
+                    BalanceRecursive(node);
                     return true;
                 }
                 return Add(node.Right, value);
@@ -52,23 +51,20 @@ namespace Datastructures
             {
                 node.Left = new(value, node);
                 Count++;
-                if (node.Height == 1)
-                    UpdateHeightRecursive(node, 2);
+                BalanceRecursive(node);
                 return true;
             }
-
             return Add(node.Left, value);
         }
 
-        private void UpdateHeightRecursive(AVLNode<T> node, int height)
+        private void BalanceRecursive(AVLNode<T> node)
         {
-            node.Height = height;
+            node.UpdateHeight();
             var parent = node.Parent;
             if (parent is null)
             {
                 if (node.IsNotBalanced)
                     _root = Balance(node);
-                _root.UpdateHeight();
                 return;
             }
 
@@ -78,57 +74,59 @@ namespace Datastructures
                     parent.Left = Balance(node);
                 else if (IsRightChild(node))
                     parent.Right = Balance(node);
-                parent.UpdateHeight();
             }
             
             if (parent.Height > node.Height)
                 return;
             
-            UpdateHeightRecursive(node.Parent, height + 1);
+            BalanceRecursive(node.Parent);
         }
 
-        //TODO: Balance(node)
         private AVLNode<T> Balance(AVLNode<T> node)
         {
             if (node.BalanceFactor > 0)
             {
-                if (node.Right.BalanceFactor > 0)
-                    return RotateLeft(node);
-                node.Right = RotateRight(node.Right);
+                if (node.Right.BalanceFactor < 0)
+                    node.Right = RotateRight(node.Right);
                 return RotateLeft(node);
             }
 
-            if (node.Left.BalanceFactor < 0)
-                return RotateRight(node);
-            node.Left = RotateLeft(node.Left);
+            if (node.Left.BalanceFactor > 0)
+                node.Left = RotateLeft(node.Left);
             return RotateRight(node);
         }
 
-        //TODO: RotateLeft(node)
         private AVLNode<T> RotateLeft(AVLNode<T> parent)
         {
             var child = parent.Right;
-            parent.Right = child.Left;
-            if (parent.Right is not null)
-                parent.Right.Parent = parent;
-            child.Left = parent;
+            SwapRightOf(parent, child.Left);
             child.Parent = parent.Parent;
-            child.Left.Parent = child;
+            SwapLeftOf(child, parent);
             child.Left.UpdateHeight();
             child.UpdateHeight();
             return child;
         }
+
+        private static void SwapRightOf(AVLNode<T> parent, AVLNode<T> child)
+        {
+            if (child is not null)
+                child.Parent = parent;
+            parent.Right = child;
+        }
         
-        //TODO: RotateRight(node)
+        private static void SwapLeftOf(AVLNode<T> parent, AVLNode<T> child)
+        {
+            if (child is not null)
+                child.Parent = parent;
+            parent.Left = child;
+        }
+
         private AVLNode<T> RotateRight(AVLNode<T> parent)
         {
             var child = parent.Left;
-            parent.Left = child.Right;
-            if (parent.Left is not null)
-                parent.Left.Parent = parent;
-            child.Right = parent;
+            SwapLeftOf(parent, child.Right);
             child.Parent = parent.Parent;
-            child.Right.Parent = child;
+            SwapRightOf(child, parent);
             child.Right.UpdateHeight();
             child.UpdateHeight();
             return child;

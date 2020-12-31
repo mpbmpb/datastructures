@@ -65,20 +65,21 @@ namespace Datastructures.Tests
         }
 
         [Theory]
-        [InlineData(42)]
-        [InlineData(43)]
-        [InlineData(-7)]
-        [InlineData(1)]
-        [InlineData(420)]
-        public void Search_returns_true_if_value_was_added(int n)
+        [InlineData(42, 7)]
+        [InlineData(103, 42)]
+        [InlineData(400, -137)]
+        [InlineData(2000, 1664)]
+        // [InlineData(15000, -8923)]
+        public void Search_returns_true_if_value_was_added(int n, int target)
         {
-            var tree = new AVLTree<int>(42);
-            tree.Add(43);
-            tree.Add(-7);
-            tree.Add(1);
-            tree.Add(420);
+            var tree = new AVLTree<int>();
+            for (int i = -n; i <= n; i++)
+            {
+                if(i !=0 )
+                    tree.Add(i);
+            }
 
-            var result = tree.Search(n);
+            var result = tree.Search(target);
 
             result.Should().BeTrue();
         }
@@ -98,17 +99,22 @@ namespace Datastructures.Tests
         {
             var tree = new AVLTree<int>(42);
             
-            var root = tree.GetType().GetField("_root", BindingFlags.NonPublic | BindingFlags.Instance);
-            var initRoot = (AVLNode<int>)root.GetValue(tree);
-            var startHeight = initRoot.Height;
+            var startHeight = GetRootHeight(tree);
             tree.Add(40);
             tree.Add(50);
             tree.Add(49);
-            var finalRoot = (AVLNode<int>)root.GetValue(tree);
+            var finalRoot = GetRootHeight(tree);
 
-            
-            startHeight.Should().Be(1);
-            finalRoot.Height.Should().Be(3);
+            startHeight.Should().Be(0);
+            finalRoot.Should().Be(2);
+        }
+
+        private static int? GetRootHeight(AVLTree<int> tree)
+        {
+            var root = tree.GetType().GetField("_root", BindingFlags.NonPublic | BindingFlags.Instance);
+            var initRoot = (AVLNode<int>) root?.GetValue(tree);
+            var height = initRoot?.Height;
+            return height;
         }
 
         [Theory]
@@ -123,12 +129,11 @@ namespace Datastructures.Tests
             {
                 tree.Add(i + 1);
             }
-            var rootInfo = tree.GetType().GetField("_root", BindingFlags.NonPublic | BindingFlags.Instance);
-            var root = (AVLNode<int>)rootInfo.GetValue(tree);
-            var result = root.Height;
-            var max = 1.44 * Math.Log2(n);
 
-            result.Should().BeLessOrEqualTo((int)max);
+            var result = GetRootHeight(tree);
+            var max = (int)(1.44 * Math.Log2(n));
+
+            result.Should().BeLessOrEqualTo(max);
         }
     }
 }
