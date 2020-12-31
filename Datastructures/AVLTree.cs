@@ -107,18 +107,18 @@ namespace Datastructures
             return child;
         }
 
-        private static void SwapRightOf(AVLNode<T> parent, AVLNode<T> child)
+        private static void SwapRightOf(AVLNode<T> first, AVLNode<T> second)
         {
-            if (child is not null)
-                child.Parent = parent;
-            parent.Right = child;
+            if (second is not null)
+                second.Parent = first;
+            first.Right = second;
         }
         
-        private static void SwapLeftOf(AVLNode<T> parent, AVLNode<T> child)
+        private static void SwapLeftOf(AVLNode<T> first, AVLNode<T> second)
         {
-            if (child is not null)
-                child.Parent = parent;
-            parent.Left = child;
+            if (second is not null)
+                second.Parent = first;
+            first.Left = second;
         }
 
         private AVLNode<T> RotateRight(AVLNode<T> parent)
