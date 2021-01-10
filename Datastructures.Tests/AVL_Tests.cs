@@ -212,21 +212,21 @@ namespace Datastructures.Tests
             result.Should().Equal(expected);
         }
 
-        // [Fact]
-        // public void Delete_removes_value_from_tree()
-        // {
-        //     var tree = new AVLTree<int>(42);
-        //     
-        //     tree.Add(40);
-        //     tree.Add(50);
-        //     tree.Add(49);
-        //     tree.Add(-12);
-        //     tree.Add(141);
-        //
-        //     tree.Delete(42);
-        //     var result = tree.Search(42);
-        //
-        //     result.Should().BeFalse();
-        // }
+        [Fact]
+        public void Delete_removes_value_from_tree()
+        {
+            var tree = new AVLTree<int>(42);
+            
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            tree.Delete(42);
+            var result = tree.Search(42);
+
+            result.Should().BeFalse();
+        }
     }
 }

@@ -65,10 +65,57 @@ namespace Datastructures
             }
         }
 
-        // private AVLNode<T> Delete(T Value)
-        // {
-        //     
-        // }
+        public bool Delete(T value) => value.CompareTo(Delete(Search(_root, value)) ) == 0;
+            
+        //TODO: BALANCE after removal!!
+        private T Delete(AVLNode<T> nodeToDelete)
+        {
+            if (nodeToDelete is null)
+                return default;
+            var value = nodeToDelete.Value;
+            
+            if (nodeToDelete.Left is null)
+            {
+                if (nodeToDelete.Right is null)
+                    RemoveNodeFromParent(nodeToDelete);
+                else if (IsLeftChild(nodeToDelete))
+                    nodeToDelete.Parent.Left = nodeToDelete.Right;
+                else
+                    nodeToDelete.Parent.Right = nodeToDelete.Right;
+                //balance
+                return value;
+            }
+
+            if (nodeToDelete.Right is null)
+            {
+                if (IsLeftChild(nodeToDelete))
+                    nodeToDelete.Parent.Left = nodeToDelete.Left;
+                else
+                    nodeToDelete.Parent.Right = nodeToDelete.Left;
+                //balance
+                return value;
+            }
+
+            //TODO: node.value = Delete(right-child.Min) or Delete(left-child.Max)
+            if (IsLeftChild(nodeToDelete) || (nodeToDelete.Parent is null && nodeToDelete.BalanceFactor > 0))
+                nodeToDelete.Value = Delete(Min(nodeToDelete.Right));
+            else
+                nodeToDelete.Value = Delete(Max(nodeToDelete.Left));
+
+            //balance
+            return value;
+        }
+
+        private void RemoveNodeFromParent(AVLNode<T> nodeToDelete)
+        {
+            if (nodeToDelete.Parent is null)
+                _root = null;
+            else if (IsLeftChild(nodeToDelete))
+                nodeToDelete.Parent.Left = null;
+            else
+                nodeToDelete.Parent.Right = null;
+        }
+
 
         private void BalanceRecursive(AVLNode<T> node)
         {
