@@ -32,57 +32,62 @@ namespace Datastructures
 
         private bool Add(AVLNode<T> node, T value)
         {
-            var compare = value.CompareTo(node.Value);
-            if (compare == 0)
-                return false;
-            if (compare > 0)
+            while (true)
             {
-                if (node.Right is null)
+                var compare = value.CompareTo(node.Value);
+                if (compare == 0) return false;
+                if (compare > 0)
                 {
-                    node.Right = new (value, node);
+                    if (node.Right is null)
+                    {
+                        node.Right = new(value, node);
+                        Count++;
+                        BalanceRecursive(node);
+                        return true;
+                    }
+
+                    node = node.Right;
+                    continue;
+                }
+
+                if (node.Left is null)
+                {
+                    node.Left = new(value, node);
                     Count++;
                     BalanceRecursive(node);
                     return true;
                 }
-                return Add(node.Right, value);
-            }
 
-            if (node.Left is null)
-            {
-                node.Left = new(value, node);
-                Count++;
-                BalanceRecursive(node);
-                return true;
+                node = node.Left;
             }
-            return Add(node.Left, value);
         }
 
         private void BalanceRecursive(AVLNode<T> node)
         {
-            node.UpdateHeight();
-            var parent = node.Parent;
-            if (parent is null)
+            while (true)
             {
-                if (node.IsNotBalanced)
-                    _root = Balance(node);
-                return;
-            }
+                node.UpdateHeight();
+                var parent = node.Parent;
+                if (parent is null)
+                {
+                    if (node.IsNotBalanced) _root = Balance(node);
+                    return;
+                }
 
-            if (node.IsNotBalanced)
-            {
-                if (IsLeftChild(node))
-                    parent.Left = Balance(node);
-                else if (IsRightChild(node))
-                    parent.Right = Balance(node);
+                if (node.IsNotBalanced)
+                {
+                    if (IsLeftChild(node))
+                        parent.Left = Balance(node);
+                    else if (IsRightChild(node)) parent.Right = Balance(node);
+                }
+
+                if (parent.Height > node.Height) return;
+
+                node = node.Parent;
             }
-            
-            if (parent.Height > node.Height)
-                return;
-            
-            BalanceRecursive(node.Parent);
         }
 
-        private AVLNode<T> Balance(AVLNode<T> node)
+        private static AVLNode<T> Balance(AVLNode<T> node)
         {
             if (node.BalanceFactor > 0)
             {
@@ -96,7 +101,7 @@ namespace Datastructures
             return RotateRight(node);
         }
 
-        private AVLNode<T> RotateLeft(AVLNode<T> parent)
+        private static AVLNode<T> RotateLeft(AVLNode<T> parent)
         {
             var child = parent.Right;
             SwapRightOf(parent, child.Left);
@@ -121,7 +126,7 @@ namespace Datastructures
             first.Left = second;
         }
 
-        private AVLNode<T> RotateRight(AVLNode<T> parent)
+        private static AVLNode<T> RotateRight(AVLNode<T> parent)
         {
             var child = parent.Left;
             SwapLeftOf(parent, child.Right);
@@ -135,19 +140,44 @@ namespace Datastructures
 
         public bool Search(T value) => Search(_root, value);
 
-        private bool Search(AVLNode<T> node, T value)
+        private static bool Search(AVLNode<T> node, T value)
         {
-            if (node is null)
-                return false;
-            
-            var compare = value.CompareTo(node.Value);
-            if (compare == 0)
-                return true;
-            
-            if (compare > 0)
-                return Search(node.Right, value);
-            
-            return Search(node.Left, value);
+            while (true)
+            {
+                if (node is null) return false;
+
+                var compare = value.CompareTo(node.Value);
+                switch (compare)
+                {
+                    case 0:
+                        return true;
+                    case > 0:
+                        node = node.Right;
+                        continue;
+                    default:
+                        node = node.Left;
+                        break;
+                }
+            }
         }
+    }
+
+    public class AVLTree<TKey, TValue> where TKey : IComparable<TKey>
+    {
+        private AVLNode<TKey, TValue> _root;
+        public int Count { get; private set; }
+        private static bool IsLeftChild(AVLNode<TKey, TValue> node) => node.Parent?.Left?.Equals(node) ?? false;
+        private static bool IsRightChild(AVLNode<TKey, TValue> node) => node.Parent?.Right?.Equals(node) ?? false;
+
+        public AVLTree()
+        {
+        }
+
+        public AVLTree(TKey key, TValue value)
+        {
+            _root = new(key, value);
+            Count = 1;
+        }
+
     }
 }

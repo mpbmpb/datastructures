@@ -12,7 +12,7 @@ namespace ConsoleApp
             var tree = new AVLTree<int>();
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 1; i <= 40000; i++)
+            for (int i = 1; i <= 32000; i++)
             {
                 tree.Add(i);
             }
@@ -20,7 +20,7 @@ namespace ConsoleApp
             Console.WriteLine(sw.ElapsedMilliseconds);
             Console.ReadKey();
             sw.Restart();
-            Console.WriteLine(tree.Search(38769));
+            Console.WriteLine(tree.Search(8769));
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds);
             var tree2 = new BST<int>();
