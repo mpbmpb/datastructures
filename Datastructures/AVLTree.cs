@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Datastructures
 {
@@ -6,8 +9,8 @@ namespace Datastructures
     {
         private AVLNode<T> _root;
         public int Count { get; private set; }
-        private static bool IsLeftChild(AVLNode<T> node) => node.Parent?.Left?.Equals(node) ?? false;
-        private static bool IsRightChild(AVLNode<T> node) => node.Parent?.Right?.Equals(node) ?? false;
+        private static bool IsLeftChild(AVLNode<T> node) => node?.Parent?.Left?.Equals(node) ?? false;
+        private static bool IsRightChild(AVLNode<T> node) => node?.Parent?.Right?.Equals(node) ?? false;
 
         public AVLTree()
         {
@@ -61,6 +64,11 @@ namespace Datastructures
                 node = node.Left;
             }
         }
+
+        // private AVLNode<T> Delete(T Value)
+        // {
+        //     
+        // }
 
         private void BalanceRecursive(AVLNode<T> node)
         {
@@ -137,20 +145,79 @@ namespace Datastructures
             return child;
         }
 
+        public IEnumerable<T> InOrder()
+        {
+            var node = _root;
+            if (node is null) yield break;
+            node = Min(node);
 
-        public bool Search(T value) => Search(_root, value);
+            while (node is not null)
+            {
+                yield return node.Value;
+                if (node.Right is not null)
+                    node = Min(node.Right);
+                else
+                {
+                    while (IsRightChild(node))
+                        node = node.Parent;
+                    node = node.Parent;
+                }
+            }
+        }
 
-        private static bool Search(AVLNode<T> node, T value)
+        public IEnumerable<T> InReverseOrder()
+        {
+            var node = _root;
+            if (node is null) yield break;
+            node = Max(node);
+
+            while (node is not null)
+            {
+                yield return node.Value;
+                if (node.Left is not null)
+                    node = Max(node.Left);
+                else
+                {
+                    while (IsLeftChild(node))
+                        node = node.Parent;
+                    node = node.Parent;
+                }
+            }
+        }
+
+        public T Max() => Max(_root).Value ?? default;
+
+        private static AVLNode<T> Max(AVLNode<T> node)
+        {
+            while (node.Right is not null)
+                node = node.Right;
+
+            return node;
+        }
+
+        public T Min() => Min(_root).Value ?? default;
+        
+        private static AVLNode<T> Min(AVLNode<T> node)
+        {
+            while (node.Left is not null)
+                node = node.Left;
+
+            return node;
+        }
+
+        public bool Search(T value) => Search(_root, value) is not null;
+
+        private static AVLNode<T> Search(AVLNode<T> node, T value)
         {
             while (true)
             {
-                if (node is null) return false;
+                if (node is null) return null;
 
                 var compare = value.CompareTo(node.Value);
                 switch (compare)
                 {
                     case 0:
-                        return true;
+                        return node;
                     case > 0:
                         node = node.Right;
                         continue;

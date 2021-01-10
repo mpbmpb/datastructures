@@ -69,7 +69,7 @@ namespace Datastructures.Tests
         [InlineData(103, 42)]
         [InlineData(400, -137)]
         [InlineData(2000, 1664)]
-        // [InlineData(15000, -8923)]
+        [InlineData(15000, -8923)]
         public void Search_returns_true_if_value_was_added(int n, int target)
         {
             var tree = new AVLTree<int>();
@@ -135,5 +135,98 @@ namespace Datastructures.Tests
 
             result.Should().BeLessOrEqualTo(max);
         }
+
+        [Fact]
+        public void Max_returns_max_value()
+        {
+            var tree = new AVLTree<int>(42);
+            
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.Max();
+
+            result.Should().Be(141);
+        }
+
+        [Fact]
+        public void Min_returns_min_value()
+        {
+            var tree = new AVLTree<int>(42);
+            
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.Min();
+
+            result.Should().Be(-12);
+        }
+
+        [Fact]
+        public void InOrder_returns_values_in_ascending_order()
+        {
+            var tree = new AVLTree<int>(42);
+            
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.InOrder();
+            var expected = new int[] {-12, 40, 42, 49, 50, 141};
+
+            result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void InOrder_returns_empty_coll_when_tree_is_empty()
+        {
+            var tree = new AVLTree<int>();
+
+            var result = tree.InOrder();
+
+            result.Should().BeEmpty();
+        }
+        
+        [Fact]
+        public void InReverseOrder_returns_values_in_descending_order()
+        {
+            var tree = new AVLTree<int>(42);
+            
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.InReverseOrder();
+            var expected = new int[] { 141, 50, 49, 42, 40, -12};
+
+            result.Should().Equal(expected);
+        }
+
+        // [Fact]
+        // public void Delete_removes_value_from_tree()
+        // {
+        //     var tree = new AVLTree<int>(42);
+        //     
+        //     tree.Add(40);
+        //     tree.Add(50);
+        //     tree.Add(49);
+        //     tree.Add(-12);
+        //     tree.Add(141);
+        //
+        //     tree.Delete(42);
+        //     var result = tree.Search(42);
+        //
+        //     result.Should().BeFalse();
+        // }
     }
 }

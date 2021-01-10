@@ -18,13 +18,10 @@ namespace ConsoleApp
             }
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds);
-            Console.ReadKey();
             sw.Restart();
-            Console.WriteLine(tree.Search(8769));
+            var order = tree.InOrder().ToArray();
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds);
-            var tree2 = new BST<int>();
-            Console.WriteLine(tree2.Min() is null);
         }
     }
 }
