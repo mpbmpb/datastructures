@@ -80,9 +80,11 @@ namespace Datastructures
                     RemoveNodeFromParent(nodeToDelete);
                 else if (IsLeftChild(nodeToDelete))
                     nodeToDelete.Parent.Left = nodeToDelete.Right;
-                else
+                else if (IsRightChild(nodeToDelete))
                     nodeToDelete.Parent.Right = nodeToDelete.Right;
-                //balance
+                else
+                    _root = nodeToDelete.Right;
+                BalanceRecursive(nodeToDelete.Right);
                 return value;
             }
 
@@ -90,9 +92,11 @@ namespace Datastructures
             {
                 if (IsLeftChild(nodeToDelete))
                     nodeToDelete.Parent.Left = nodeToDelete.Left;
-                else
+                else if (IsRightChild(nodeToDelete))
                     nodeToDelete.Parent.Right = nodeToDelete.Left;
-                //balance
+                else
+                    _root = nodeToDelete.Left;
+                BalanceRecursive(nodeToDelete.Left);
                 return value;
             }
 
@@ -102,7 +106,7 @@ namespace Datastructures
             else
                 nodeToDelete.Value = Delete(Max(nodeToDelete.Left));
 
-            //balance
+            BalanceRecursive(nodeToDelete);
             return value;
         }
 
@@ -119,9 +123,8 @@ namespace Datastructures
 
         private void BalanceRecursive(AVLNode<T> node)
         {
-            while (true)
+            while (node is not null)
             {
-                node.UpdateHeight();
                 var parent = node.Parent;
                 if (parent is null)
                 {
@@ -135,9 +138,6 @@ namespace Datastructures
                         parent.Left = Balance(node);
                     else if (IsRightChild(node)) parent.Right = Balance(node);
                 }
-
-                if (parent.Height > node.Height) return;
-
                 node = node.Parent;
             }
         }
@@ -162,8 +162,6 @@ namespace Datastructures
             SwapRightOf(parent, child.Left);
             child.Parent = parent.Parent;
             SwapLeftOf(child, parent);
-            child.Left.UpdateHeight();
-            child.UpdateHeight();
             return child;
         }
 
@@ -187,8 +185,6 @@ namespace Datastructures
             SwapLeftOf(parent, child.Right);
             child.Parent = parent.Parent;
             SwapRightOf(child, parent);
-            child.Right.UpdateHeight();
-            child.UpdateHeight();
             return child;
         }
 

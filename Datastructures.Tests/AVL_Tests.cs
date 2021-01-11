@@ -228,5 +228,27 @@ namespace Datastructures.Tests
 
             result.Should().BeFalse();
         }
+
+        [Fact]
+        public void Delete_preserves_AVL_property_max_height()
+        {
+            var tree = new AVLTree<int>(45);
+            
+            tree.Add(74);
+            tree.Add(35);
+            tree.Add(3);
+            tree.Add(70);
+            tree.Add(25);
+            tree.Add(1);
+
+            var heightBeforeDeletion = GetRootHeight(tree);
+
+            tree.Delete(74);
+            var result = GetRootHeight(tree);
+
+            heightBeforeDeletion.Should().Be(3);
+            result.Should().Be(2);
+
+        }
     }
 }

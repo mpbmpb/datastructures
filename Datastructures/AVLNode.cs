@@ -8,8 +8,8 @@ namespace Datastructures
         public AVLNode<T> Parent { get; set; }
         public AVLNode<T> Left { get; set; }
         public AVLNode<T> Right { get; set; }
-        public int Height { get; set; } = 0;
-        public int BalanceFactor => Right?.Height ?? 0 - Left?.Height ?? 0;
+        public int Height => Math.Max(Left?.Height ?? -1, Right?.Height ?? -1) + 1;
+        public int BalanceFactor => (Right?.Height + 1 ?? 0) - (Left?.Height + 1 ?? 0);
         public bool IsNotBalanced => Math.Abs(BalanceFactor) > 1;
         
         public AVLNode(T value)
@@ -22,12 +22,6 @@ namespace Datastructures
         {
             Parent = parent;
         }
-        
-        public void UpdateHeight()
-        {
-            Height = Math.Max(Right?.Height ?? -1, Left?.Height ?? -1) + 1;
-        }
-
     }
 
     public class AVLNode<TKey, TValue> where TKey : IComparable<TKey>
