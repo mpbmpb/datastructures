@@ -65,9 +65,14 @@ namespace Datastructures
             }
         }
 
+        public void Clear()
+        {
+            _root = null;
+            Count = 0;
+        }
+
         public bool Delete(T value) => value.CompareTo(Delete(Search(_root, value)) ) == 0;
             
-        //TODO: BALANCE after removal!!
         private T Delete(AVLNode<T> nodeToDelete)
         {
             if (nodeToDelete is null)
@@ -79,28 +84,29 @@ namespace Datastructures
                 if (nodeToDelete.Right is null)
                     RemoveNodeFromParent(nodeToDelete);
                 else if (IsLeftChild(nodeToDelete))
-                    nodeToDelete.Parent.Left = nodeToDelete.Right;
+                    SwapLeftOf(nodeToDelete.Parent, nodeToDelete.Right);
                 else if (IsRightChild(nodeToDelete))
-                    nodeToDelete.Parent.Right = nodeToDelete.Right;
+                    SwapRightOf(nodeToDelete.Parent, nodeToDelete.Right);
                 else
                     _root = nodeToDelete.Right;
                 BalanceRecursive(nodeToDelete.Right);
+                Count--;
                 return value;
             }
 
             if (nodeToDelete.Right is null)
             {
                 if (IsLeftChild(nodeToDelete))
-                    nodeToDelete.Parent.Left = nodeToDelete.Left;
+                    SwapLeftOf(nodeToDelete.Parent, nodeToDelete.Left);
                 else if (IsRightChild(nodeToDelete))
-                    nodeToDelete.Parent.Right = nodeToDelete.Left;
+                    SwapRightOf(nodeToDelete.Parent, nodeToDelete.Left);
                 else
                     _root = nodeToDelete.Left;
                 BalanceRecursive(nodeToDelete.Left);
+                Count--;
                 return value;
             }
 
-            //TODO: node.value = Delete(right-child.Min) or Delete(left-child.Max)
             if (IsLeftChild(nodeToDelete) || (nodeToDelete.Parent is null && nodeToDelete.BalanceFactor > 0))
                 nodeToDelete.Value = Delete(Min(nodeToDelete.Right));
             else
@@ -125,6 +131,7 @@ namespace Datastructures
         {
             while (node is not null)
             {
+                node.UpdateHeight();
                 var parent = node.Parent;
                 if (parent is null)
                 {
@@ -156,12 +163,14 @@ namespace Datastructures
             return RotateRight(node);
         }
 
-        private static AVLNode<T> RotateLeft(AVLNode<T> parent)
+        private static AVLNode<T> RotateLeft(AVLNode<T> node)
         {
-            var child = parent.Right;
-            SwapRightOf(parent, child.Left);
-            child.Parent = parent.Parent;
-            SwapLeftOf(child, parent);
+            var child = node.Right;
+            SwapRightOf(node, child.Left);
+            child.Parent = node.Parent;
+            SwapLeftOf(child, node);
+            node.UpdateHeight();
+            child.UpdateHeight();
             return child;
         }
 
@@ -179,12 +188,14 @@ namespace Datastructures
             first.Left = second;
         }
 
-        private static AVLNode<T> RotateRight(AVLNode<T> parent)
+        private static AVLNode<T> RotateRight(AVLNode<T> node)
         {
-            var child = parent.Left;
-            SwapLeftOf(parent, child.Right);
-            child.Parent = parent.Parent;
-            SwapRightOf(child, parent);
+            var child = node.Left;
+            SwapLeftOf(node, child.Right);
+            child.Parent = node.Parent;
+            SwapRightOf(child, node);
+            node.UpdateHeight();
+            child.UpdateHeight();
             return child;
         }
 

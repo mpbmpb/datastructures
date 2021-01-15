@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using Xunit;
 using FluentAssertions;
@@ -153,86 +154,9 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Max_returns_max_value()
-        {
-            var tree = new AVLTree<int>(42);
-            
-            tree.Add(40);
-            tree.Add(50);
-            tree.Add(49);
-            tree.Add(-12);
-            tree.Add(141);
-
-            var result = tree.Max();
-
-            result.Should().Be(141);
-        }
-
-        [Fact]
-        public void Min_returns_min_value()
-        {
-            var tree = new AVLTree<int>(42);
-            
-            tree.Add(40);
-            tree.Add(50);
-            tree.Add(49);
-            tree.Add(-12);
-            tree.Add(141);
-
-            var result = tree.Min();
-
-            result.Should().Be(-12);
-        }
-
-        [Fact]
-        public void InOrder_returns_values_in_ascending_order()
-        {
-            var tree = new AVLTree<int>(42);
-            
-            tree.Add(40);
-            tree.Add(50);
-            tree.Add(49);
-            tree.Add(-12);
-            tree.Add(141);
-
-            var result = tree.InOrder();
-            var expected = new int[] {-12, 40, 42, 49, 50, 141};
-
-            result.Should().Equal(expected);
-        }
-
-        [Fact]
-        public void InOrder_returns_empty_coll_when_tree_is_empty()
-        {
-            var tree = new AVLTree<int>();
-
-            var result = tree.InOrder();
-
-            result.Should().BeEmpty();
-        }
-        
-        [Fact]
-        public void InReverseOrder_returns_values_in_descending_order()
-        {
-            var tree = new AVLTree<int>(42);
-            
-            tree.Add(40);
-            tree.Add(50);
-            tree.Add(49);
-            tree.Add(-12);
-            tree.Add(141);
-
-            var result = tree.InReverseOrder();
-            var expected = new int[] { 141, 50, 49, 42, 40, -12};
-
-            result.Should().Equal(expected);
-        }
-
-        [Fact]
         public void Delete_removes_value_from_tree()
         {
             var tree = new AVLTree<int>(42);
-            
             tree.Add(40);
             tree.Add(50);
             tree.Add(49);
@@ -245,11 +169,32 @@ namespace Datastructures.Tests
             result.Should().BeFalse();
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(17)]
+        [InlineData(42)]
+        public void Delete_decreases_count(int n)
+        {
+            var tree = new AVLTree<int>();
+
+            for (int i = 0; i < n; i++)
+            {
+                tree.Add(i);
+            }
+            for (int i = 0; i < n; i++)
+            {
+                tree.Delete(i);
+            }
+            var result = tree.Count;
+
+            result.Should().Be(0);
+        }
+
         [Fact]
         public void Delete_balances_tree_to_correct_height()
         {
             var tree = new AVLTree<int>(45);
-            
             tree.Add(74);
             tree.Add(35);
             tree.Add(3);
@@ -289,6 +234,142 @@ namespace Datastructures.Tests
 
             result.Should().BeLessOrEqualTo(max);
         }
+        
+        
+        [Fact]
+        public void Max_returns_max_value()
+        {
+            var tree = new AVLTree<int>(42);
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
 
+            var result = tree.Max();
+
+            result.Should().Be(141);
+        }
+
+        [Fact]
+        public void Min_returns_min_value()
+        {
+            var tree = new AVLTree<int>(42);
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.Min();
+
+            result.Should().Be(-12);
+        }
+
+        [Fact]
+        public void InOrder_returns_values_in_ascending_order()
+        {
+            var tree = new AVLTree<int>(42);
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.InOrder();
+            var expected = new int[] {-12, 40, 42, 49, 50, 141};
+
+            result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void InOrder_returns_empty_coll_when_tree_is_empty()
+        {
+            var tree = new AVLTree<int>();
+
+            var result = tree.InOrder();
+
+            result.Should().BeEmpty();
+        }
+        
+        [Fact]
+        public void InReverseOrder_returns_values_in_descending_order()
+        {
+            var tree = new AVLTree<int>(42);
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            var result = tree.InReverseOrder();
+            var expected = new int[] { 141, 50, 49, 42, 40, -12};
+
+            result.Should().Equal(expected);
+        }
+
+        [Theory]
+        [InlineData(4)]
+        [InlineData(8)]
+        [InlineData(32)]
+        [InlineData(144)]
+        [InlineData(1264)]
+        public void Add_preserves_AVL_ordering(int n)
+        {
+            var tree = new AVLTree<int>();
+            for (int i = 0; i < n; i++)
+            {
+                tree.Add(i + 1);
+            }
+
+            var result = tree.InOrder();
+            var expected = Enumerable.Range(1, n);
+
+            result.Should().Equal(expected);
+
+        }
+        
+        [Theory]
+        [InlineData(4)]
+        [InlineData(8)]
+        [InlineData(32)]
+        [InlineData(144)]
+        [InlineData(1264)]
+        public void Delete_preserves_AVL_ordering(int n)
+        {
+            var tree = new AVLTree<int>();
+            for (int i = 0; i < n * 2; i++)
+            {
+                tree.Add(i + 1);
+            }
+            for (int i = 0; i < n; i++)
+            {
+                tree.Delete(i + 1);
+            }
+
+            var result = tree.InOrder();
+            var expected = Enumerable.Range(n + 1, n);
+
+            result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void Clear_clears_tree()
+        {
+            var tree = new AVLTree<int>(42);
+            tree.Add(40);
+            tree.Add(50);
+            tree.Add(49);
+            tree.Add(-12);
+            tree.Add(141);
+
+            tree.Clear();
+
+            var result = tree.InOrder();
+            var expected = Enumerable.Empty<int>();
+
+            result.Should().Equal(expected);
+            tree.Count.Should().Be(0);
+        }
     }
 }
