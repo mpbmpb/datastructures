@@ -11,112 +11,104 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var Test1 = new AVLTests();
-            Test1.TestInsertsAtSize(1000, 1024);
-            Test1.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
-            Test1 = new AVLTests();
-            Test1.TestInsertsAtSize(1000, 1024);
-            Test1.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            var Test = new AVLTests();
             
+            Test.TestInserts();
+            Test.TestInserts();
+            Test.TestInserts();
             
-            var Test2 = new AVLTests();
-            Test2.TestInsertsAtSize(1000, 32768);
-            Test2.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            
-            Test2 = new AVLTests();
-            Test2.TestInsertsAtSize(1000, 32768);
-            Test2.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            
-            var Test3 = new AVLTests();
-            Test3.TestInsertsAtSize(1000, 1048576);
-            Test3.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            
-            Test3 = new AVLTests();
-            Test3.TestInsertsAtSize(1000, 1048576);
-            Test3.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
 
         }
 
         public class AVLTests
         {
+            private readonly int startSize = 32;
+            private readonly int inserts = 16;
             private List<AVLTree<int>> _trees;
+            private List<long> times;
 
             public AVLTests()
             {
+                init();
+            }
+
+            private void init()
+            {
                 _trees = new();
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     _trees.Add(new AVLTree<int>());
                 }
+
+                times = new();
             }
 
             public void Clear()
             {
                 _trees = null;
-            }
-            public void TestInsertsAtSize(int inserts, int addToSize)
-            {
-                var times = new List<int>();
-                var threads = new List<Thread>();
-                for (int thread = 0; thread < 4; thread++)
-                {
-                    var tree = _trees[thread];
-                    threads.Add(new Thread(() =>
-                    {
-                        var sw = new Stopwatch();
-                        for (int i = 1; i < addToSize; i++)
-                        {
-                            tree.Add(i);
-                        }
-
-                        sw.Start();
-                        for (int i = addToSize; i < addToSize + inserts; i++)
-                        {
-                            tree.Add(inserts * 1000 + i);
-                        }
-
-                        sw.Stop();
-                        times.Add((int)(sw.ElapsedTicks / inserts ));
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
-                        // Thread.Sleep(100);
-                        GC.Collect();
-                    }));
-                }
-
-                foreach (var thread in threads)
-                { 
-                    thread.Start();
-                }
-
-                threads[0].Join();
-                threads[1].Join();
-                threads[2].Join();
-                threads[3].Join();
-                Console.WriteLine($"Max: {times.Max()} ticks per insert at size: {addToSize}");
-                Console.WriteLine($"Min: {times.Min()} ticks per insert at size: {addToSize}");
-                // Console.WriteLine($"Avg: {times.Average()} ticks per insert at size: {addToSize}");
+                times = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                init();
             }
             
+            public void TestInserts()
+            {
+                LoadTreesWithEvenNums();
+
+                TimeInserts();
+
+                PrintResults();
+                
+                Clear();
+            }
+
+            private void LoadTreesWithEvenNums()
+            {
+                for (int t = 0; t < _trees.Count; t++)
+                {
+                    var tree = _trees[t];
+                    var size = (int)Math.Pow(startSize, t + 1);
+                    for (int i = 2; i < size * 2; i += 2)
+                    {
+                        tree.Add(i);
+                    }
+                }
+            }
+
+            private void TimeInserts()
+            {
+                for (int t = 0; t < _trees.Count; t++)
+                {
+                    var tree = _trees[t];
+                    var size = (int)Math.Pow(startSize, t + 1);
+                    var equalPart = size / inserts;
+                    if ((equalPart & 1) == 0) equalPart++;
+                    var numberToAdd = 1;
+
+                    var sw = Stopwatch.StartNew();
+                    for (int i = 0; i < inserts; i++)
+                    {
+                        tree.Add(numberToAdd);
+                        numberToAdd += equalPart;
+                    }
+
+                    sw.Stop();
+
+                    times.Add((sw.ElapsedTicks / inserts));
+                }
+            }
+
+            private void PrintResults()
+            {
+                for (int t = 0; t < _trees.Count; t++)
+                {
+                    double growth = t == 0 ? 1.0 : (double)times[t] / (double)times[t - 1];
+                    Console.WriteLine($"{times[t]} ticks per insert at tree size: {(int)Math.Pow(startSize, t + 1)}, "
+                    + $"growth factor: {growth}");
+                }
+            }
         }
     }
 }
