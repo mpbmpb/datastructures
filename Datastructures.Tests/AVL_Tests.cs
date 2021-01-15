@@ -69,7 +69,6 @@ namespace Datastructures.Tests
         [InlineData(103, 42)]
         [InlineData(400, -137)]
         [InlineData(2000, 1664)]
-        [InlineData(15000, -8923)]
         public void Search_returns_true_if_value_was_added(int n, int target)
         {
             var tree = new AVLTree<int>();
@@ -117,11 +116,28 @@ namespace Datastructures.Tests
             return height;
         }
 
+        [Fact]
+        public void Add_balances_tree_to_correct_height()
+        {
+            var tree = new AVLTree<int>(45);
+            tree.Add(70);
+            tree.Add(35);
+            tree.Add(3);
+            tree.Add(74);
+            tree.Add(25);
+            tree.Add(81);
+
+            var result = GetRootHeight(tree);
+
+            result.Should().Be(2);
+        }
+        
         [Theory]
         [InlineData(4)]
         [InlineData(8)]
         [InlineData(32)]
         [InlineData(144)]
+        [InlineData(1264)]
         public void Add_preserves_AVL_property_max_height(int n)
         {
             var tree = new AVLTree<int>();
@@ -230,7 +246,7 @@ namespace Datastructures.Tests
         }
 
         [Fact]
-        public void Delete_preserves_AVL_property_max_height()
+        public void Delete_balances_tree_to_correct_height()
         {
             var tree = new AVLTree<int>(45);
             
@@ -248,7 +264,31 @@ namespace Datastructures.Tests
 
             heightBeforeDeletion.Should().Be(3);
             result.Should().Be(2);
-
         }
+        
+        [Theory]
+        [InlineData(4)]
+        [InlineData(8)]
+        [InlineData(32)]
+        [InlineData(144)]
+        [InlineData(1264)]
+        public void Delete_preserves_AVL_property_max_height(int n)
+        {
+            var tree = new AVLTree<int>();
+            for (int i = 0; i < n * 2; i++)
+            {
+                tree.Add(i + 1);
+            }
+            for (int i = 0; i < n; i++)
+            {
+                tree.Delete(i + 1);
+            }
+
+            var result = GetRootHeight(tree);
+            var max = (int)(1.44 * Math.Log2(n));
+
+            result.Should().BeLessOrEqualTo(max);
+        }
+
     }
 }
