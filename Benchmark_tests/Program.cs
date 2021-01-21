@@ -14,7 +14,6 @@ namespace Benchmark_tests
         {
 
             BenchmarkRunner.Run<AVL_Benchmark_tests>();
-
         }
 
         public class AVLTests
