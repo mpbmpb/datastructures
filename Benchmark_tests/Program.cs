@@ -12,7 +12,6 @@ namespace Benchmark_tests
     {
         static void Main(string[] args)
         {
-
             BenchmarkRunner.Run<AVL_Benchmark_tests>();
         }
 
