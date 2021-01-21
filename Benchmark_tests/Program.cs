@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using BenchmarkDotNet.Running;
 using Datastructures;
 
-namespace ConsoleApp
+namespace Benchmark_tests
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var Test = new AVLTests();
-            
-            Test.TestInserts();
-            Test.TestInserts();
-            Test.TestInserts();
-            
+
+            BenchmarkRunner.Run<AVL_Benchmark_tests>();
 
         }
 
